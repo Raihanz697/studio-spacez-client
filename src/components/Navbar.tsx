@@ -32,8 +32,8 @@ export default function Navbar() {
 
   // Authenticated User State (set to null to see unauthenticated state)
   const [user, setUser] = useState<UserProfile | null>({
-    name: "Alex",
-    email: "alex@studiospace.io",
+    name: "Raihan",
+    email: "raihan@studiospace.io",
     avatar:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
   });
@@ -58,7 +58,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur-md transition-colors dark:border-neutral-800 dark:bg-neutral-950/95">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-        
+
         {/* 1. Brand Logo */}
         <Link href="/" className="group flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white shadow-md shadow-amber-500/20 transition-transform group-hover:scale-105">
@@ -82,11 +82,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`relative text-sm font-medium transition-colors ${
-                  isActive
+                className={`relative text-sm font-medium transition-colors ${isActive
                     ? "font-semibold text-amber-500"
                     : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
-                }`}
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -99,7 +98,7 @@ export default function Navbar() {
 
         {/* 3. Right Controls (Theme Toggle & User Menu) */}
         <div className="flex items-center gap-3 sm:gap-4">
-          
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
@@ -207,19 +206,12 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2 sm:gap-3">
-              <button
-                onClick={() =>
-                  setUser({
-                    name: "Alex",
-                    email: "alex@studiospace.io",
-                    avatar:
-                      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-                  })
-                }
+              <Link
+                href="/login"
                 className="rounded-xl px-3 py-2 text-xs font-semibold text-neutral-700 transition hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
               >
                 Log In
-              </button>
+              </Link>
 
               <Link
                 href="/register"
@@ -250,9 +242,8 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium ${
-                  pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
-                }`}
+                className={`text-sm font-medium ${pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
+                  }`}
               >
                 {link.name}
               </Link>
