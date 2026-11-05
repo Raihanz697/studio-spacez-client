@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Aperture,
   Moon,
@@ -17,26 +16,19 @@ import {
   Menu,
   X,
 } from "lucide-react";
-
-interface UserProfile {
-  name: string;
-  email: string;
-  avatar: string;
-}
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  // 1. BetterAuth theke real session dhora
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [userDropdown, setUserDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Authenticated User State (set to null to see unauthenticated state)
-  const [user, setUser] = useState<UserProfile | null>({
-    name: "Raihan",
-    email: "raihan@studiospace.io",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-  });
 
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -45,6 +37,18 @@ export default function Navbar() {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
+    }
+  };
+
+  // 2. Real Logout function
+  const handleLogout = async () => {
+    try {
+      await authClient.signOut();
+      setUserDropdown(false);
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
   };
 
@@ -58,10 +62,10 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur-md transition-colors dark:border-neutral-800 dark:bg-neutral-950/95">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-
-        {/* 1. Brand Logo */}
+        
+        {/* Brand Logo */}
         <Link href="/" className="group flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white shadow-md shadow-amber-500/20 transition-transform group-hover:scale-105">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-neutral-950 shadow-md shadow-amber-500/20 transition-transform group-hover:scale-105">
             <Aperture className="h-6 w-6 stroke-[2.2]" />
           </div>
           <div className="flex flex-col">
@@ -74,7 +78,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* 2. Desktop Navigation with Active Indicator */}
+        {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -82,10 +86,11 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`relative text-sm font-medium transition-colors ${isActive
+                className={`relative text-sm font-medium transition-colors ${
+                  isActive
                     ? "font-semibold text-amber-500"
                     : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
-                  }`}
+                }`}
               >
                 {link.name}
                 {isActive && (
@@ -96,10 +101,10 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* 3. Right Controls (Theme Toggle & User Menu) */}
+        {/* Right Controls */}
         <div className="flex items-center gap-3 sm:gap-4">
-
-          {/* Theme Toggle Button */}
+          
+          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle Theme"
@@ -108,21 +113,30 @@ export default function Navbar() {
             {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </button>
 
-          {/* Conditional Rendering: Authenticated vs Unauthenticated */}
-          {user ? (
+          {/* Conditional User Profile / Login-Register Buttons */}
+          {isPending ? (
+            <div className="h-8 w-20 animate-pulse rounded-full bg-neutral-200 dark:bg-neutral-800" />
+          ) : user ? (
             <div className="relative">
               <button
                 onClick={() => setUserDropdown(!userDropdown)}
                 className="flex items-center gap-2.5 rounded-full border border-neutral-200 p-1 pr-3 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:hover:border-neutral-700"
               >
-                <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-amber-500/30">
-                  <Image
-                    src={user.avatar}
-                    alt={user.name}
-                    width={32}
-                    height={32}
-                    className="h-full w-full object-cover"
-                  />
+                <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-amber-500/30 bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
+                  {user.image ? (
+                    <img
+                      src={user.image}
+                      alt={user.name || "User"}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-neutral-700 dark:text-neutral-300">
+                      {user.name?.charAt(0).toUpperCase() || "U"}
+                    </span>
+                  )}
                 </div>
                 <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
                   {user.name}
@@ -130,10 +144,9 @@ export default function Navbar() {
                 <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
               </button>
 
-              {/* User Dropdown Menu */}
+              {/* User Dropdown */}
               {userDropdown && (
                 <>
-                  {/* Backdrop overlay to close dropdown when clicking outside */}
                   <div
                     className="fixed inset-0 z-40"
                     onClick={() => setUserDropdown(false)}
@@ -187,13 +200,9 @@ export default function Navbar() {
                       </Link>
                     </div>
 
-                    {/* Logout Button */}
                     <div className="border-t border-neutral-100 pt-1 dark:border-neutral-800">
                       <button
-                        onClick={() => {
-                          setUser(null);
-                          setUserDropdown(false);
-                        }}
+                        onClick={handleLogout}
                         className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-950/30"
                       >
                         <LogOut className="h-4 w-4" />
@@ -222,7 +231,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Mobile Menu Toggle Button */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 text-neutral-700 md:hidden dark:border-neutral-800 dark:text-neutral-300"
@@ -233,7 +242,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 4. Mobile Responsive Navigation Drawer */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="border-b border-neutral-200 bg-white px-6 py-4 md:hidden dark:border-neutral-800 dark:bg-neutral-950">
           <nav className="flex flex-col gap-3">
@@ -242,8 +251,9 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium ${pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
-                  }`}
+                className={`text-sm font-medium ${
+                  pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
+                }`}
               >
                 {link.name}
               </Link>
