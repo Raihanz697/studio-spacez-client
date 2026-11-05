@@ -67,7 +67,7 @@ export default function StudioDetailsPage({ params }) {
   useEffect(() => {
     async function fetchStudioDetails() {
       try {
-        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+        const serverUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}`;
         const res = await fetch(`${serverUrl}/studios/${studioId}`);
         if (res.ok) {
           const data = await res.json();
@@ -135,12 +135,11 @@ export default function StudioDetailsPage({ params }) {
     };
 
     try {
-      const res = await fetch("http://localhost:8000/bookings", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingPayload),
       });
-
       if (!res.ok) {
         throw new Error("Could not record booking on server");
       }

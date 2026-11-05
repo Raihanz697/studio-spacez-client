@@ -41,14 +41,12 @@ export default function MyListingsPage() {
 
 
     useEffect(() => {
-        async function fetchMyStudios() {
+        async function fetchUserBookings() {
             if (!user?.email) return;
 
             try {
-                const serverUrl =
-                    process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
                 const res = await fetch(
-                    `${serverUrl}/my-studios?email=${encodeURIComponent(user.email)}`
+                    `${process.env.NEXT_PUBLIC_SERVER_URL}/studios?email=${encodeURIComponent(user.email)}`
                 );
                 if (res.ok) {
                     const data = await res.json();
@@ -57,14 +55,14 @@ export default function MyListingsPage() {
                     }
                 }
             } catch (err) {
-                console.error("Failed to load listings:", err);
+                console.error("Failed to load bookings:", err);
             } finally {
                 setLoading(false);
             }
         }
 
         if (user?.email) {
-            fetchMyStudios();
+            fetchUserBookings();
         } else if (!sessionLoading && !user) {
             setLoading(false);
         }
@@ -77,7 +75,7 @@ export default function MyListingsPage() {
 
         try {
             const serverUrl =
-                process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+                `${process.env.NEXT_PUBLIC_SERVER_URL}`
             const res = await fetch(
                 `${serverUrl}/studios/${selectedStudioToDelete._id}`,
                 {
@@ -189,8 +187,8 @@ export default function MyListingsPage() {
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
                                                         <img
-                                                            src={studio.image}
-                                                            alt={studio.name}
+                                                            src={studio.image || studio.imageUrl || "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04"}
+                                                            alt={studio.title || studio.name || "Studio"}
                                                             className="h-full w-full object-cover"
                                                         />
                                                     </div>
@@ -199,10 +197,10 @@ export default function MyListingsPage() {
                                                             href={`/studios/${studio._id}`}
                                                             className="font-bold text-neutral-900 hover:text-amber-500 dark:text-white dark:hover:text-amber-400 transition-colors line-clamp-1"
                                                         >
-                                                            {studio.name}
+                                                            {studio.title || studio.name || "Untitled Studio"}
                                                         </Link>
                                                         <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">
-                                                            Max Crew: {studio.maxCrew || 15} creators
+                                                            Max Crew: {studio.capacity || studio.maxCrew || 15} creators
                                                         </p>
                                                     </div>
                                                 </div>
@@ -212,20 +210,20 @@ export default function MyListingsPage() {
                                             <td className="py-4 px-6 whitespace-nowrap">
                                                 <span className="inline-flex items-center gap-1.5 rounded-lg bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
                                                     <Layers className="h-3 w-3 text-amber-500" />
-                                                    {studio.category}
+                                                    {studio.category || studio.type || "Studio"}
                                                 </span>
                                             </td>
 
                                             {/* Pricing */}
                                             <td className="py-4 px-6 whitespace-nowrap">
                                                 <div className="text-neutral-900 dark:text-white font-bold">
-                                                    ${studio.pricePerHour}{" "}
+                                                    ${studio.hourlyRate || studio.pricePerHour || studio.price || 0}{" "}
                                                     <span className="text-xs font-normal text-neutral-400">
                                                         / hr
                                                     </span>
                                                 </div>
                                                 <p className="text-[11px] text-neutral-400">
-                                                    Deposit: ${studio.deposit || 100}
+                                                    Deposit: ${studio.deposit || 0}
                                                 </p>
                                             </td>
 
@@ -233,14 +231,13 @@ export default function MyListingsPage() {
                                             <td className="py-4 px-6">
                                                 <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 max-w-xs truncate">
                                                     <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                                                    <span className="truncate">{studio.location}</span>
+                                                    <span className="truncate">{studio.location || studio.address || "N/A"}</span>
                                                 </div>
                                             </td>
 
                                             {/* Actions */}
                                             <td className="py-4 px-6 text-right whitespace-nowrap">
                                                 <div className="inline-flex items-center gap-2">
-                                                    {/* Update Link */}
                                                     <Link
                                                         href={`/studios/edit/${studio._id}`}
                                                         className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 hover:bg-neutral-100 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 transition"
@@ -249,7 +246,6 @@ export default function MyListingsPage() {
                                                         Update
                                                     </Link>
 
-                                                    {/* Delete Action (Triggers Confirmation Modal) */}
                                                     <button
                                                         type="button"
                                                         onClick={() => setSelectedStudioToDelete(studio)}
@@ -299,7 +295,7 @@ export default function MyListingsPage() {
                             <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed px-2">
                                 Are you sure you want to permanently remove{" "}
                                 <span className="font-semibold text-neutral-800 dark:text-neutral-200">
-                                    {`"${selectedStudioToDelete.name}"`}
+                                    {`"${selectedStudioToDelete.title || selectedStudioToDelete.name}"`}
                                 </span>
                                 ? This will remove the workspace from public discovery and search.
                             </p>
