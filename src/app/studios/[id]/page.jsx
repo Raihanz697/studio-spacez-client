@@ -67,7 +67,8 @@ export default function StudioDetailsPage({ params }) {
   useEffect(() => {
     async function fetchStudioDetails() {
       try {
-        const res = await fetch(`http://localhost:8000/studios/${studioId}`);
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+        const res = await fetch(`${serverUrl}/studios/${studioId}`);
         if (res.ok) {
           const data = await res.json();
           if (data && data._id) {
@@ -160,7 +161,7 @@ export default function StudioDetailsPage({ params }) {
   return (
     <div className="w-full min-h-screen bg-neutral-50/50 py-10 px-4 sm:px-6 lg:px-8 dark:bg-neutral-950 transition-colors">
       <div className="mx-auto max-w-6xl">
-        
+
         {/* Back Link */}
         <button
           onClick={() => router.back()}
@@ -172,10 +173,10 @@ export default function StudioDetailsPage({ params }) {
 
         {/* Top Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Main Content (Left 8 Cols) */}
           <div className="lg:col-span-8 space-y-6">
-            
+
             {/* Studio Cover Image */}
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
               <img
@@ -242,7 +243,7 @@ export default function StudioDetailsPage({ params }) {
           {/* Booking Card Sidebar (Right 4 Cols) */}
           <div className="lg:col-span-4 sticky top-28">
             <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-xl shadow-neutral-200/40 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none">
-              
+
               <div className="flex items-baseline justify-between border-b border-neutral-100 pb-5 dark:border-neutral-800">
                 <div>
                   <span className="text-3xl font-black text-neutral-900 dark:text-white">
@@ -295,7 +296,7 @@ export default function StudioDetailsPage({ params }) {
 
             {/* Modal Card */}
             <div className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl dark:bg-neutral-900 dark:border dark:border-neutral-800 z-10 max-h-[92vh] overflow-y-auto">
-              
+
               {/* Close Button */}
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -319,7 +320,7 @@ export default function StudioDetailsPage({ params }) {
 
               {/* Form */}
               <form onSubmit={handleConfirmBooking} className="mt-6 space-y-4">
-                
+
                 {/* Shoot Date */}
                 <div>
                   <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
