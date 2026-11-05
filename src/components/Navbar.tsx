@@ -8,17 +8,18 @@ import {
   Moon,
   Sun,
   ChevronDown,
-  PlusCircle,
-  LayoutDashboard,
   Calendar,
   LogOut,
   FolderKanban,
   Menu,
   X,
+  Compass,
+  PlusCircleIcon,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -62,7 +63,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 backdrop-blur-md transition-colors dark:border-neutral-800 dark:bg-neutral-950/95">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-        
+
         {/* Brand Logo */}
         <Link href="/" className="group flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-neutral-950 shadow-md shadow-amber-500/20 transition-transform group-hover:scale-105">
@@ -86,11 +87,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`relative text-sm font-medium transition-colors ${
-                  isActive
+                className={`relative text-sm font-medium transition-colors ${isActive
                     ? "font-semibold text-amber-500"
                     : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
-                }`}
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -103,7 +103,7 @@ export default function Navbar() {
 
         {/* Right Controls */}
         <div className="flex items-center gap-3 sm:gap-4">
-          
+
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
@@ -164,12 +164,12 @@ export default function Navbar() {
 
                     <div className="py-1 text-xs text-neutral-700 dark:text-neutral-200">
                       <Link
-                        href="/dashboard"
-                        onClick={() => setUserDropdown(false)}
-                        className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        href="/studios"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800 rounded-xl transition"
                       >
-                        <LayoutDashboard className="h-4 w-4 text-neutral-400" />
-                        Dashboard
+                        <Compass className="h-4 w-4 text-amber-500" />
+                        Explore Studios
                       </Link>
 
                       <Link
@@ -177,7 +177,7 @@ export default function Navbar() {
                         onClick={() => setUserDropdown(false)}
                         className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition hover:bg-neutral-100 dark:hover:bg-neutral-800"
                       >
-                        <PlusCircle className="h-4 w-4 text-neutral-400" />
+                        <PlusCircleIcon className="h-4 w-4 text-neutral-400" />
                         Add New Studio
                       </Link>
 
@@ -251,9 +251,8 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium ${
-                  pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
-                }`}
+                className={`text-sm font-medium ${pathname === link.href ? "text-amber-500 font-semibold" : "text-neutral-600 dark:text-neutral-300"
+                  }`}
               >
                 {link.name}
               </Link>
