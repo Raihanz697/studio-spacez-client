@@ -300,7 +300,7 @@ export default function MyListingsPage() {
               <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed px-2">
                 Are you sure you want to permanently remove{" "}
                 <span className="font-semibold text-neutral-800 dark:text-neutral-200">
-                  "{selectedStudioToDelete.name}"
+                  {selectedStudioToDelete.name}"
                 </span>
                 ? This will remove the workspace from public discovery and search.
               </p>

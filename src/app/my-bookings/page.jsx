@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -16,6 +17,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { getTokenFromClient } from "../../lib/getTokenFromClient";
+
 
 const INITIAL_DEMO_BOOKINGS = [
   {
@@ -51,8 +54,16 @@ function MyBookingsPage() {
       if (!user?.email) return;
 
       try {
+        const token = await getTokenFromClient();
         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
-        const res = await fetch(`${serverUrl}/bookings?email=${user.email}`);
+        
+        const res = await fetch(`${serverUrl}/bookings?email=${user.email}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
@@ -73,16 +84,26 @@ function MyBookingsPage() {
     }
   }, [user, sessionLoading]);
 
-  // বুকিং বাতিল কনফার্ম হ্যান্ডলার
+  // বুকিং বাতিল কনফার্ম হ্যান্ডলার (With Token)
   const handleConfirmCancel = async () => {
     if (!selectedBookingToCancel) return;
     setCancelling(true);
 
     try {
+      const token = await getTokenFromClient();
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
-      await fetch(`${serverUrl}/bookings/${selectedBookingToCancel._id}`, {
+
+      const res = await fetch(`${serverUrl}/bookings/${selectedBookingToCancel._id}`, {
         method: "DELETE",
-      }).catch(() => null);
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to cancel booking");
+      }
 
       setBookings((prev) =>
         prev.filter((item) => item._id !== selectedBookingToCancel._id)
@@ -205,13 +226,11 @@ function MyBookingsPage() {
         {/* CANCEL CONFIRMATION POPUP MODAL */}
         {selectedBookingToCancel && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop */}
             <div
               className="fixed inset-0 bg-neutral-950/70 backdrop-blur-sm transition-opacity"
               onClick={() => !cancelling && setSelectedBookingToCancel(null)}
             />
 
-            {/* Modal Card */}
             <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl dark:bg-neutral-900 dark:border dark:border-neutral-800 z-10 text-center">
               
               <button
@@ -278,5 +297,4 @@ function MyBookingsPage() {
   );
 }
 
-// নিশ্চিতভাবে Default Export
 export default MyBookingsPage;
