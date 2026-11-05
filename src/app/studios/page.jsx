@@ -15,10 +15,7 @@ import {
 
 const CATEGORIES = ["All", "Photography", "Music", "Dance", "Podcast", "Art"];
 
-function StudiosPage () {
-
- 
-
+export default function StudiosPage() {
   const [studios, setStudios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +34,7 @@ function StudiosPage () {
           }
         }
       } catch (err) {
-        console.error("Backend connection error:", err);
+        console.error("Backend fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -152,14 +149,8 @@ function StudiosPage () {
               No studios match your filter
             </h3>
             <p className="mt-1 text-xs text-neutral-400">
-              Try searching for different keywords or create a new studio.
+              Try searching for different keywords or explore other categories.
             </p>
-            <Link
-              href="/add-studio"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-neutral-950 hover:bg-amber-400 transition"
-            >
-              Add Studio
-            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -223,5 +214,3 @@ function StudiosPage () {
     </div>
   );
 }
-
-export default StudiosPage;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {
@@ -13,59 +13,73 @@ import {
   Layers,
   ArrowRight,
   Loader2,
+  Users,
+  ShieldCheck,
+  CheckSquare,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-// import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const CATEGORIES = [
-  "Photography",
-  "Music & Sound",
+  "Photo Studio",
+  "Film Stage",
+  "Podcast Lounge",
+  "Music Suite",
+  "Workshop & Art",
   "Dance & Rehearsal",
-  "Podcast & Broadcast",
-  "Art & Pottery",
-  "Film & Video Production",
 ];
 
-// Backend API Call
-const addStudio = async (studioData) => {
-  let token = null;
-  try {
-    if (typeof getTokenFromClient === "function") {
-      token = await getTokenFromClient();
-    }
-  } catch (err) {
-    console.warn("Could not retrieve token:", err);
-  }
-
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL ;
-
-  const response = await fetch(`${serverUrl}/studios`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(studioData),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || "Failed to add studio!");
-  }
-
-  return response.json();
-};
+const AVAILABLE_AMENITIES = [
+  "Cyclorama Wall",
+  "Soundproofing",
+  "DMX Lighting Grid",
+  "High-Speed Wi-Fi",
+  "Air Conditioning",
+  "Dressing & Makeup Room",
+  "Audio Interface & Mics",
+  "Prop Selection",
+  "Freight Elevator",
+  "Free Parking",
+];
 
 export default function AddStudioPage() {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-
- 
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
+  // ১. Private Route Guard: আন-অথেন্টিকেটেড ইউজার সরাসরি ঢুকলে লগইনে রিডাইরেক্ট করবে
+  useEffect(() => {
+    if (!isPending && !user) {
+      toast.error("Please login to list a new studio workspace!");
+      router.push("/login?callbackUrl=/add-studio");
+    }
+  }, [isPending, user, router]);
+
+  // Amenity Checkbox টগল হ্যান্ডলার
+  const handleAmenityToggle = (amenity) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenity)
+        ? prev.filter((item) => item !== amenity)
+        : [...prev, amenity]
+    );
+  };
+
+  // লোডিং স্টেট
+  if (isPending) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-neutral-950">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      </div>
+    );
+  }
+
+  // ইউজার না থাকলে রেন্ডার হবে না
+  if (!user) return null;
+
+  // ফর্ম সাবমিট
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -78,31 +92,49 @@ export default function AddStudioPage() {
       category: formData.get("category"),
       location: formData.get("location")?.trim(),
       pricePerHour: Number(formData.get("pricePerHour")),
+      deposit: Number(formData.get("deposit")) || 100,
+      maxCrew: Number(formData.get("maxCrew")) || 15,
       image: formData.get("image")?.trim(),
       description: formData.get("description")?.trim(),
+      amenities: selectedAmenities,
       rating: 5.0,
       reviewsCount: 0,
       createdAt: new Date().toISOString(),
-      // Host info automatically attached from session
+      // হোস্ট ইনফো (সেশন থেকে অটোমেটিক যুক্ত হবে)
       host: {
-        name: user?.name || "Anonymous Host",
-        email: user?.email || "host@studiospace.com",
+        name: user?.name || "Verified Host",
+        email: user?.email,
         image: user?.image || null,
       },
+      ownerEmail: user?.email, // my-listings এ ফিল্টার করার জন্য
     };
 
     try {
-      await addStudio(studioData);
-      toast.success("Studio listed successfully!");
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+      const response = await fetch(`${serverUrl}/studios`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studioData),
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => null);
+        throw new Error(err?.message || "Failed to list studio");
+      }
+
+      toast.success("Studio published successfully!");
       form.reset();
       setImageUrl("");
+      setSelectedAmenities([]);
 
-      // Success hole studios page ba my-listings page-e niye jabe
-      router.push("/studios");
+      // রিকোয়ারমেন্ট অনুযায়ী সাবমিশনের পর /my-listings এ যাবে
+      router.push("/my-listings");
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error(error.message || "Failed to add studio. Please try again.");
+      toast.error(error.message || "Failed to create studio. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -110,7 +142,7 @@ export default function AddStudioPage() {
 
   return (
     <main className="w-full min-h-screen bg-neutral-50/50 py-12 px-4 sm:px-6 lg:px-8 dark:bg-neutral-950 transition-colors">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         
         {/* Header */}
         <div className="text-center mb-8">
@@ -118,35 +150,55 @@ export default function AddStudioPage() {
             <Aperture className="h-6 w-6 stroke-[2.2]" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
-            List a New Studio
+            List a New Creative Studio
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
-            Share your creative space with photographers, musicians, and creators worldwide.
+            Publish your production stage, cyc wall, podcast lounge, or music room for fellow creators.
           </p>
         </div>
 
         {/* Form Card */}
         <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 sm:p-10 shadow-xl shadow-neutral-200/40 dark:border-neutral-800 dark:bg-neutral-900/90 dark:shadow-none">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Studio Name */}
+            {/* Read-Only Host Credentials */}
+            <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950/60">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
+                Listing Host (Read-Only)
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center font-bold text-sm uppercase">
+                  {user.name?.charAt(0) || "U"}
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-neutral-900 dark:text-white">
+                    {user.name}
+                  </h4>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Studio Title */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                Studio Name
+                Studio Title / Space Name
               </label>
               <div className="relative">
                 <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
                 <input
                   type="text"
                   name="name"
-                  placeholder="e.g. Lumina Daylight Loft"
+                  placeholder="e.g. Apex 4K Soundstage & Cyclorama"
                   required
                   className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
                 />
               </div>
             </div>
 
-            {/* Category & Price Per Hour */}
+            {/* Category & Hourly Rate */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
@@ -160,7 +212,7 @@ export default function AddStudioPage() {
                     defaultValue=""
                     className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
                   >
-                    <option value="" disabled>Select category</option>
+                    <option value="" disabled>Select studio type</option>
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
@@ -180,7 +232,7 @@ export default function AddStudioPage() {
                     type="number"
                     name="pricePerHour"
                     min="1"
-                    placeholder="e.g. 50"
+                    placeholder="e.g. 65"
                     required
                     className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
                   />
@@ -188,27 +240,64 @@ export default function AddStudioPage() {
               </div>
             </div>
 
-            {/* Location */}
+            {/* Security Deposit & Max Crew Capacity */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
+                  Security Deposit ($)
+                </label>
+                <div className="relative">
+                  <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <input
+                    type="number"
+                    name="deposit"
+                    min="0"
+                    placeholder="e.g. 100"
+                    required
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
+                  Max Crew Capacity
+                </label>
+                <div className="relative">
+                  <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <input
+                    type="number"
+                    name="maxCrew"
+                    min="1"
+                    placeholder="e.g. 20"
+                    required
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Address / Location */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                Location / Address
+                Location / Physical Address
               </label>
               <div className="relative">
                 <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
                 <input
                   type="text"
                   name="location"
-                  placeholder="e.g. Gulshan 2, Dhaka"
+                  placeholder="e.g. 42 Creative District, Banani, Dhaka"
                   required
                   className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
                 />
               </div>
             </div>
 
-            {/* Image URL & Live Preview */}
+            {/* Cover Image URL */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                Cover Image URL
+                Studio Image URL
               </label>
               <div className="relative">
                 <ImageIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
@@ -227,7 +316,7 @@ export default function AddStudioPage() {
                 <div className="mt-3 overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800 aspect-[16/8] max-h-48 w-full bg-neutral-100 dark:bg-neutral-950">
                   <img
                     src={imageUrl}
-                    alt="Preview"
+                    alt="Cover preview"
                     className="h-full w-full object-cover"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
@@ -237,37 +326,53 @@ export default function AddStudioPage() {
               )}
             </div>
 
-            {/* Description */}
+            {/* Amenities Checkboxes */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
+                Available Amenities & Gear (Select all that apply)
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {AVAILABLE_AMENITIES.map((amenity) => {
+                  const isChecked = selectedAmenities.includes(amenity);
+                  return (
+                    <button
+                      type="button"
+                      key={amenity}
+                      onClick={() => handleAmenityToggle(amenity)}
+                      className={`flex items-center gap-2 rounded-xl border p-2.5 text-xs font-medium text-left transition-all ${
+                        isChecked
+                          ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                          : "border-neutral-200 bg-neutral-50/50 text-neutral-600 hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-400"
+                      }`}
+                    >
+                      <CheckSquare
+                        className={`h-4 w-4 shrink-0 ${
+                          isChecked ? "text-amber-500" : "text-neutral-400"
+                        }`}
+                      />
+                      <span className="truncate">{amenity}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Detailed Description */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
-                Description & Amenities
+                Detailed Overview & Rules
               </label>
               <div className="relative">
                 <FileText className="absolute left-3.5 top-3.5 h-4 w-4 text-neutral-400" />
                 <textarea
                   name="description"
                   rows={4}
-                  placeholder="Describe lighting gear, acoustics, backdrop colors, air conditioning, and access guidelines..."
+                  placeholder="Detail ceiling height, electrical outlets, access instructions, soundproofing specs, and gear lists..."
                   required
                   className="w-full rounded-xl border border-neutral-200 bg-neutral-50/50 py-3 pl-10 pr-4 text-sm text-neutral-900 placeholder-neutral-400 focus:border-amber-500 focus:bg-white focus:outline-none dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:focus:border-amber-500 transition-all"
                 />
               </div>
             </div>
-
-            {/* Host Preview Badge */}
-            {user && (
-              <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50/50 p-3 dark:border-neutral-800 dark:bg-neutral-950/50">
-                <div className="h-8 w-8 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center font-bold text-xs uppercase">
-                  {user.name?.charAt(0) || "U"}
-                </div>
-                <div className="text-xs">
-                  <p className="font-semibold text-neutral-800 dark:text-neutral-200">
-                    Listing as: {user.name}
-                  </p>
-                  <p className="text-neutral-400 text-[11px]">{user.email}</p>
-                </div>
-              </div>
-            )}
 
             {/* Submit Button */}
             <button
@@ -278,11 +383,11 @@ export default function AddStudioPage() {
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Publishing Studio...
+                  Publishing Space...
                 </>
               ) : (
                 <>
-                  Publish Studio Listing
+                  Publish Studio Space
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
