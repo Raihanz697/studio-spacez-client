@@ -23,24 +23,23 @@ export default function StudiosPage() {
   const [sortBy, setSortBy] = useState("featured");
 
   useEffect(() => {
-    async function loadStudios() {
-      try {
-        const serverUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}`;
-        const res = await fetch(`${serverUrl}/studios`);
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            setStudios(data);
-          }
-        }
-      } catch (err) {
-        console.error("Backend fetch error:", err);
-      } finally {
-        setLoading(false);
+  async function loadAllStudios() {
+    try {
+      setLoading(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/studios`);
+      if (res.ok) {
+        const data = await res.json();
+        setStudios(Array.isArray(data) ? data : []);
       }
+    } catch (err) {
+      console.error("Failed to load studios:", err);
+    } finally {
+      setLoading(false);
     }
-    loadStudios();
-  }, []);
+  }
+
+  loadAllStudios();
+}, []);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
