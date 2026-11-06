@@ -17,8 +17,8 @@ import {
   Check,
   Loader2
 } from "lucide-react";
-import { toast } from "react-hot-toast"; // অথবা তোমার প্রোজেক্টে sonner থাকলে: import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client"; // তোমার প্রোজেক্টের better-auth ক্লায়েন্ট পাথ
+import { toast } from "react-hot-toast"; 
+import { authClient } from "@/lib/auth-client"; 
 
 const AMENITIES_LIST = [
   "Cyclorama Wall",
@@ -59,7 +59,7 @@ function AddStudioPage() {
     rules: ""
   });
 
-  // প্রাইভেট রাউট প্রটেকশন
+  
   useEffect(() => {
     if (!sessionLoading && !user) {
       toast.error("Please login first to add a studio!");
@@ -146,7 +146,7 @@ function AddStudioPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
-        {/* Read-Only User Info */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-neutral-50 dark:bg-neutral-900/50 p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">
@@ -179,7 +179,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Studio Title */}
+        
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
             Studio Title / Space Name
@@ -198,7 +198,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Category & Hourly Rate */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
@@ -241,7 +241,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Security Deposit & Max Crew Capacity */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
@@ -281,7 +281,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Location */}
+        
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
             Location / Physical Address
@@ -300,7 +300,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Studio Image URL */}
+        
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
             Studio Image URL
@@ -319,7 +319,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Amenities */}
+        
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-3">
             Available Amenities & Gear (Select all that apply)
@@ -352,7 +352,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Detailed Overview */}
+        
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-300 mb-2">
             Detailed Overview & Rules
@@ -371,7 +371,7 @@ function AddStudioPage() {
           </div>
         </div>
 
-        {/* Submit Button */}
+        
         <button
           type="submit"
           disabled={submitting}

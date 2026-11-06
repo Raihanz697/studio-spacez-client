@@ -44,7 +44,7 @@ export default function LoginPage() {
 
             console.log("Login Successful Data:", data);
 
-            // Login সফল হলে হোমপেজে পাঠানো হবে
+            
             router.push("/");
             router.refresh();
         } catch (err) {
@@ -71,7 +71,7 @@ export default function LoginPage() {
         <main className="w-full flex items-center justify-center py-16 px-4">
             <div className="w-full max-w-[440px] mx-auto">
 
-                {/* Brand Header */}
+                
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center gap-2 group mb-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-neutral-950 shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
@@ -89,11 +89,11 @@ export default function LoginPage() {
                     </p>
                 </div>
 
-                {/* Minimalist Card */}
+                
                 <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 sm:p-9 shadow-xl shadow-neutral-200/40 dark:border-neutral-800 dark:bg-neutral-900/90 dark:shadow-none">
                     <form onSubmit={handleLogin} className="space-y-4">
 
-                        {/* Email Address */}
+                        
                         <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                                 Email Address
@@ -134,7 +134,7 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        {/* Error Message */}
+                        
                         {errorMessage && (
                             <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-600 dark:text-rose-400">
                                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -142,7 +142,7 @@ export default function LoginPage() {
                             </div>
                         )}
 
-                        {/* Login Button */}
+                        
                         <button
                             type="submit"
                             disabled={loading}
@@ -153,7 +153,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    {/* Divider */}
+                    
                     <div className="relative my-6 text-center">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-neutral-200 dark:border-neutral-800" />

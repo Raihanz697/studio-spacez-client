@@ -76,15 +76,15 @@ export default function EditStudioPage() {
   }, [sessionLoading, user, router, studioId]);
 
   
- // ২. প্রি-ফিল ডাটা ফেচিং
+ 
   useEffect(() => {
     async function fetchStudioDetails() {
-      // studioId না থাকা পর্যন্ত রিকোয়েস্ট পাঠাবে না
+      
       if (!studioId || studioId === "undefined") return;
 
       try {
         const serverUrl =
-          process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+          `${process.env.NEXT_PUBLIC_SERVER_URL}`;
         const res = await fetch(`${serverUrl}/studios/${studioId}`);
         
         if (!res.ok) {
@@ -121,7 +121,7 @@ export default function EditStudioPage() {
     }
   }, [studioId, user?.email, router]);
 
-  // Amenity Checkbox টগল
+  
   const handleAmenityToggle = (amenity) => {
     setFormData((prev) => ({
       ...prev,
@@ -131,7 +131,7 @@ export default function EditStudioPage() {
     }));
   };
 
-  // ফর্ম সাবমিশন (PATCH)
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdating(true);
@@ -188,7 +188,7 @@ export default function EditStudioPage() {
     <main className="w-full min-h-screen bg-neutral-50/50 py-12 px-4 sm:px-6 lg:px-8 dark:bg-neutral-950 transition-colors">
       <div className="max-w-3xl mx-auto">
         
-        {/* Top Back Link */}
+        
         <Link
           href="/my-listings"
           className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-500 hover:text-amber-500 mb-6 transition-colors"
@@ -197,7 +197,7 @@ export default function EditStudioPage() {
           Back to My Listings
         </Link>
 
-        {/* Header */}
+        
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
             Update Studio Specifications
@@ -207,11 +207,11 @@ export default function EditStudioPage() {
           </p>
         </div>
 
-        {/* Edit Form */}
+        
         <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 sm:p-10 shadow-xl shadow-neutral-200/40 dark:border-neutral-800 dark:bg-neutral-900/90 dark:shadow-none">
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Read-Only Host Profile */}
+            
             <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950/60">
               <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 mb-1">
                 Listing Host (Read-Only)
@@ -231,7 +231,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Studio Name */}
+           
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Studio Title
@@ -250,7 +250,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Category & Hourly Rate */}
+           
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
@@ -298,7 +298,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Deposit & Max Crew */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
@@ -339,7 +339,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Location */}
+            
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Location / Address
@@ -358,7 +358,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Image URL & Live Preview */}
+            
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Studio Image URL
@@ -390,7 +390,7 @@ export default function EditStudioPage() {
               )}
             </div>
 
-            {/* Amenities Checkboxes */}
+            
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
                 Amenities & Gear
@@ -421,7 +421,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Description */}
+            
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                 Detailed Description & Rules
@@ -440,7 +440,7 @@ export default function EditStudioPage() {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            
             <div className="flex items-center gap-4 pt-2">
               <Link
                 href="/my-listings"

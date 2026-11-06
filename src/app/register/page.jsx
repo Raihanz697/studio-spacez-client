@@ -48,7 +48,7 @@ export default function RegisterPage() {
     const password = form.password.value;
     const image = imageUrl.trim();
 
-    // 1. Password validation check
+    //  Password validation check
     const validationError = validatePassword(password);
     if (validationError) {
       setErrorMessage(validationError);
@@ -58,7 +58,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // 2. Call BetterAuth signup
+      //  Call BetterAuth signup
       const { data, error } = await authClient.signUp.email({
         name,
         email,

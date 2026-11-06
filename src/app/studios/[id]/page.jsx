@@ -8,18 +8,15 @@ import {
   Star,
   Users,
   ShieldCheck,
-  Calendar,
-  Clock,
   Sparkles,
   ArrowLeft,
   X,
   CheckCircle2,
-  DollarSign,
   Loader2,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
-// ফলব্যাক মক ডাটা (যাতে ব্যাকএন্ড না থাকলেও টেস্ট করা যায়)
+
 const FALLBACK_STUDIO = {
   _id: "studio-1",
   name: "Neon Vault 4K Cinema Soundstage & Cyclorama",
@@ -41,7 +38,7 @@ const FALLBACK_STUDIO = {
 };
 
 export default function StudioDetailsPage({ params }) {
-  // Next.js 15+ unwrap params
+  
   const resolvedParams = use(params);
   const studioId = resolvedParams.id;
 
@@ -52,18 +49,18 @@ export default function StudioDetailsPage({ params }) {
   const [studio, setStudio] = useState(FALLBACK_STUDIO);
   const [loading, setLoading] = useState(true);
 
-  // Booking Modal State
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submittingBooking, setSubmittingBooking] = useState(false);
 
-  // Booking Form Inputs
+ 
   const [shootDate, setShootDate] = useState("2026-10-29");
   const [startTime, setStartTime] = useState("10:00");
   const [endTime, setEndTime] = useState("14:00");
   const [crewCount, setCrewCount] = useState(4);
   const [productionNotes, setProductionNotes] = useState("");
 
-  // ব্যাকএন্ড থেকে নির্দিষ্ট স্টুডিওর ডাটা আনা
+  
   useEffect(() => {
     async function fetchStudioDetails() {
       try {
@@ -76,7 +73,7 @@ export default function StudioDetailsPage({ params }) {
           }
         }
       } catch (err) {
-        // ব্যাকএন্ড অফ থাকলে ডিফল্ট স্টুডিও থাকবে
+        
       } finally {
         setLoading(false);
       }
@@ -86,7 +83,7 @@ export default function StudioDetailsPage({ params }) {
     }
   }, [studioId]);
 
-  // ঘণ্টা ও খরচের হিসাব
+  
   const calculateHours = () => {
     if (!startTime || !endTime) return 4;
     const [startH] = startTime.split(":").map(Number);
@@ -101,7 +98,7 @@ export default function StudioDetailsPage({ params }) {
   const shootCost = hourlyRate * hours;
   const totalCost = shootCost + deposit;
 
-  // Book Now বাটনে চাপ দিলে
+  
   const handleOpenBookingModal = () => {
     if (!user) {
       toast.error("Please login to reserve this creative workspace!");
@@ -111,7 +108,7 @@ export default function StudioDetailsPage({ params }) {
     setIsModalOpen(true);
   };
 
-  // বুকিং সাবমিট করা
+  
   const handleConfirmBooking = async (e) => {
     e.preventDefault();
     setSubmittingBooking(true);
@@ -148,7 +145,7 @@ export default function StudioDetailsPage({ params }) {
       setIsModalOpen(false);
       router.push("/my-bookings");
     } catch (err) {
-      // লোকাল ডেমো সাকসেস (যদি ব্যাকএন্ড অফ থাকে)
+      
       toast.success("Booking request simulated successfully!");
       setIsModalOpen(false);
       router.push("/my-bookings");
