@@ -158,7 +158,7 @@ export default function StudioDetailsPage({ params }) {
     <div className="w-full min-h-screen bg-neutral-50/50 py-10 px-4 sm:px-6 lg:px-8 dark:bg-neutral-950 transition-colors">
       <div className="mx-auto max-w-6xl">
 
-        {/* Back Link */}
+        
         <button
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white mb-6 transition"
@@ -324,7 +324,8 @@ export default function StudioDetailsPage({ params }) {
                   </label>
                   <div className="relative">
                     <input
-                      type="date"
+                      type="text"
+                      placeholder="DD/MM/YY"
                       value={shootDate}
                       onChange={(e) => setShootDate(e.target.value)}
                       required
