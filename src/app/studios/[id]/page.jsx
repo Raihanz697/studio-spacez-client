@@ -116,19 +116,20 @@ export default function StudioDetailsPage({ params }) {
 
     const bookingPayload = {
       studioId: studio._id,
-      studioName: studio.name,
+      studioName: studio.title || studio.name,
       studioImage: studio.image,
       studioLocation: studio.location,
       userEmail: user.email,
       userName: user.name,
-      shootDate,
-      startTime,
-      endTime,
+      shootDate:shootDate,
+      startTime:startTime,
+      endTime:endTime,
       durationHours: hours,
-      crewCount,
+      crewCount:crewCount,
       productionNotes,
-      totalCost,
-      status: "confirmed",
+      totalCost:totalCost,
+      hourlyRate: studio.hourlyRate || studio.pricePerHour || 0,
+      status: "Pending",
       createdAt: new Date().toISOString(),
     };
 
@@ -156,10 +157,10 @@ export default function StudioDetailsPage({ params }) {
   };
 
   return (
+  
+
     <div className="w-full min-h-screen bg-neutral-50/50 py-10 px-4 sm:px-6 lg:px-8 dark:bg-neutral-950 transition-colors">
       <div className="mx-auto max-w-6xl">
-
-        
         <button
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-500 hover:text-neutral-900 dark:hover:text-white mb-6 transition"
@@ -170,10 +171,8 @@ export default function StudioDetailsPage({ params }) {
 
         {/* Top Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
           {/* Main Content (Left 8 Cols) */}
           <div className="lg:col-span-8 space-y-6">
-
             {/* Studio Cover Image */}
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-sm">
               <img
@@ -195,7 +194,9 @@ export default function StudioDetailsPage({ params }) {
                 </div>
                 <div className="flex items-center gap-1.5 rounded-lg bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-600 dark:text-amber-400">
                   <Star className="h-3.5 w-3.5 fill-amber-500 stroke-amber-500" />
-                  <span>{studio.rating || "5.0"} ({studio.reviewsCount || 24} reviews)</span>
+                  <span>
+                    {studio.rating || "5.0"} ({studio.reviewsCount || 24} reviews)
+                  </span>
                 </div>
               </div>
 
@@ -212,43 +213,58 @@ export default function StudioDetailsPage({ params }) {
                 <div className="flex items-center gap-2.5 rounded-2xl bg-neutral-50 p-3 dark:bg-neutral-950/50">
                   <Users className="h-5 w-5 text-amber-500" />
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-neutral-400">Max Capacity</p>
-                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">{studio.maxCrew || 30} People</p>
+                    <p className="text-[10px] uppercase font-bold text-neutral-400">
+                      Max Capacity
+                    </p>
+                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+                      {studio.maxCrew || 30} People
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 rounded-2xl bg-neutral-50 p-3 dark:bg-neutral-950/50">
                   <ShieldCheck className="h-5 w-5 text-amber-500" />
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-neutral-400">Deposit</p>
-                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">${studio.deposit || 150} Refundable</p>
+                    <p className="text-[10px] uppercase font-bold text-neutral-400">
+                      Deposit
+                    </p>
+                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+                      ${studio.deposit || 150} Refundable
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 rounded-2xl bg-neutral-50 p-3 dark:bg-neutral-950/50 col-span-2 sm:col-span-1">
                   <Sparkles className="h-5 w-5 text-amber-500" />
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-neutral-400">Host</p>
-                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">{studio.host?.name || "Verified Space"}</p>
+                    <p className="text-[10px] uppercase font-bold text-neutral-400">
+                      Host
+                    </p>
+                    <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+                      {studio.host?.name || "Verified Space"}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Booking Card Sidebar (Right 4 Cols) */}
           <div className="lg:col-span-4 sticky top-28">
             <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-xl shadow-neutral-200/40 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none">
-
               <div className="flex items-baseline justify-between border-b border-neutral-100 pb-5 dark:border-neutral-800">
                 <div>
                   <span className="text-3xl font-black text-neutral-900 dark:text-white">
                     ${studio.pricePerHour}
                   </span>
-                  <span className="text-xs font-medium text-neutral-400"> / hour</span>
+                  <span className="text-xs font-medium text-neutral-400">
+                    {" "}
+                    / hour
+                  </span>
                 </div>
-                <span className="text-xs font-semibold text-neutral-500">Deposit: ${studio.deposit || 150}</span>
+                <span className="text-xs font-semibold text-neutral-500">
+                  Deposit: ${studio.deposit || 150}
+                </span>
               </div>
 
               <div className="my-5 space-y-3">
@@ -279,7 +295,6 @@ export default function StudioDetailsPage({ params }) {
               </p>
             </div>
           </div>
-
         </div>
 
         {/* BOOKING MODAL POPUP */}
@@ -293,7 +308,6 @@ export default function StudioDetailsPage({ params }) {
 
             {/* Modal Card */}
             <div className="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl dark:bg-neutral-900 dark:border dark:border-neutral-800 z-10 max-h-[92vh] overflow-y-auto">
-
               {/* Close Button */}
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -317,7 +331,6 @@ export default function StudioDetailsPage({ params }) {
 
               {/* Form */}
               <form onSubmit={handleConfirmBooking} className="mt-6 space-y-4">
-
                 {/* Shoot Date */}
                 <div>
                   <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
@@ -326,7 +339,11 @@ export default function StudioDetailsPage({ params }) {
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="DD/MM/YY"
+                      placeholder="e.g. DD/MM/YY"
+                      onFocus={(e) => (e.target.type = "date")}
+                      onBlur={(e) => {
+                        if (!e.target.value) e.target.type = "text";
+                      }}
                       value={shootDate}
                       onChange={(e) => setShootDate(e.target.value)}
                       required
@@ -382,7 +399,10 @@ export default function StudioDetailsPage({ params }) {
                 {/* Production Requirements / Gear Notes */}
                 <div>
                   <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                    Production Requirements / Gear Notes <span className="text-neutral-400 font-normal">(Optional)</span>
+                    Production Requirements / Gear Notes{" "}
+                    <span className="text-neutral-400 font-normal">
+                      (Optional)
+                    </span>
                   </label>
                   <textarea
                     rows={3}
@@ -396,7 +416,9 @@ export default function StudioDetailsPage({ params }) {
                 {/* Total Cost Breakdown Box */}
                 <div className="rounded-2xl border border-neutral-200 bg-neutral-50/60 p-4 dark:border-neutral-800 dark:bg-neutral-950/60 space-y-2">
                   <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400">
-                    <span>${hourlyRate} × {hours} shoot hours</span>
+                    <span>
+                      ${hourlyRate} × {hours} shoot hours
+                    </span>
                     <span>${shootCost}</span>
                   </div>
                   <div className="flex justify-between text-xs text-neutral-500 dark:text-neutral-400">
@@ -405,7 +427,9 @@ export default function StudioDetailsPage({ params }) {
                   </div>
                   <div className="flex justify-between border-t border-neutral-200 pt-2 text-sm font-bold text-neutral-900 dark:border-neutral-800 dark:text-white">
                     <span>Total Estimated Cost</span>
-                    <span className="text-amber-500 font-black">${totalCost}</span>
+                    <span className="text-amber-500 font-black">
+                      ${totalCost}
+                    </span>
                   </div>
                 </div>
 
@@ -428,11 +452,9 @@ export default function StudioDetailsPage({ params }) {
                   )}
                 </button>
               </form>
-
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

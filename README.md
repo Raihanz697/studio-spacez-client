@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 StudioSpace — Peer-to-Peer Creative Studio Booking Platform
 
-## Getting Started
+**StudioSpace** is a modern, full-stack peer-to-peer creative workspace and studio booking marketplace built with **Next.js (App Router)**, **Node.js/Express**, **MongoDB**, and **Better-Auth**. Creators, photographers, podcasters, and filmmakers can explore available studios, publish their own workspaces, manage listings, and book creative slots seamlessly.
 
-First, run the development server:
+🔗 **Live Website:** [https://your-studiospace-live-url.vercel.app](https://your-studiospace-live-url.vercel.app)  
+🔗 **Server API URL:** [https://your-studiospace-server.vercel.app](https://your-studiospace-server.vercel.app)  
+🔗 **Client Repository:** [https://github.com/your-username/studiospace-client](https://github.com/your-username/studiospace-client)  
+🔗 **Server Repository:** [https://github.com/your-username/studiospace-server](https://github.com/your-username/studiospace-server)
 
+---
+
+## ✨ Key Features
+
+- **🔐 Secure Authentication & Route Protection:** Powered by **Better-Auth** with session persistence on page reload, protected private routes (`/add-studio`, `/my-listings`, `/my-bookings`), and automatic callback redirection after login.
+- **🏢 Studio Discovery & Dynamic Filtering:** Browse all available creative workspaces on `/studios` with category filtering, real-time search, detailed studio specifications, transparent hourly pricing, and security deposit breakdowns.
+- **📅 Interactive Slot Reservation System:** Reserve studios directly from the studio details page via a dynamic booking modal with shoot date selection, custom start/end hours, crew count validation, and automated total cost calculation.
+- **📋 Personal Booking Management (`/my-bookings`):** Track all personal reservations in a clean dashboard table displaying shoot dates, time slots, total costs, live status badges (`Pending`, `Confirmed`, `Completed`, `Cancelled`), and a confirmation modal to cancel pending bookings.
+- **🛠️ Host Workspace Management (`/add-studio` & `/my-listings`):** Publish new creative studios to the marketplace and manage, update, or delete user-owned studio listings filtered strictly by the logged-in owner's email.
+- **🌓 Responsive UI & Dark/Light Mode:** Fully responsive interface across mobile, tablet, and desktop devices with seamless theme switching and toast notifications.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS, Shadcn UI, Lucide React Icons
+- **Authentication:** Better-Auth (`authClient`)
+- **Notifications:** React Hot Toast
+
+### Backend & Database
+- **Runtime & Framework:** Node.js, Express.js
+- **Database:** MongoDB (Native Driver / Atlas)
+- **Deployment:** Vercel
+
+---
+
+## 🧪 Examiner Test Credentials
+
+Use the following credentials to test private routes, studio creation, and the booking workflow:
+
+- **Email:** `examiner@studiospace.com` *(তোমার রেজিস্টার করা টেস্ট ইমেইল দাও)*
+- **Password:** `Test@1234` *(তোমার টেস্ট পাসওয়ার্ড দাও)*
+
+---
+
+## 🚀 Local Setup & Installation
+
+Follow these steps to run the project locally:
+
+### 1. Clone the Repositories
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone [https://github.com/your-username/studiospace-client.git](https://github.com/your-username/studiospace-client.git)
+cd studiospace-client

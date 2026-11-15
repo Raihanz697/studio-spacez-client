@@ -238,7 +238,7 @@ export default function MyBookingsPage() {
                             <div className="flex items-center gap-1.5 text-xs text-neutral-400 mt-0.5">
                               <MapPin className="h-3 w-3 text-amber-500 shrink-0" />
                               <span className="line-clamp-1">
-                                {booking.location || "Banani, Dhaka"}
+                                {booking.studioLocation || booking.location || "N/A"}
                               </span>
                             </div>
                           </div>
@@ -249,7 +249,7 @@ export default function MyBookingsPage() {
                       <td className="py-4 px-6 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200 font-medium">
                           <CalendarDays className="h-4 w-4 text-neutral-400" />
-                          <span>{booking.date || booking.bookingDate || "N/A"}</span>
+                          <span>{booking.shootDate || booking.date || booking.bookingDate || "N/A"}</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-neutral-400 mt-1">
                           <Clock className="h-3.5 w-3.5 text-neutral-400" />
@@ -264,10 +264,10 @@ export default function MyBookingsPage() {
                       {/* Pricing */}
                       <td className="py-4 px-6 whitespace-nowrap">
                         <div className="text-neutral-900 dark:text-white font-bold">
-                          ${booking.totalPrice || booking.amount || 0}
+                          ${booking.totalCost || booking.totalPrice || booking.amount || 0}
                         </div>
                         <p className="text-[11px] text-neutral-400">
-                          Rate: ${booking.hourlyRate || 0}/hr
+                          Crew: {booking.crewCount || 1} • {booking.durationHours || 1} hrs
                         </p>
                       </td>
 
@@ -287,9 +287,7 @@ export default function MyBookingsPage() {
                             <Ban className="h-3 w-3" />
                             Cancel Booking
                           </button>
-                        ) : (
-                          <span className="text-xs text-neutral-400 italic">No action</span>
-                        )}
+                        ) : null}
                       </td>
                     </tr>
                   ))}
