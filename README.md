@@ -1,54 +1,58 @@
-# 🎬 StudioSpace — Peer-to-Peer Creative Studio Booking Platform
+# StudioSpace
+**Create. Collaborate. Capture.**
 
-**StudioSpace** is a modern, full-stack peer-to-peer creative workspace and studio booking marketplace built with **Next.js (App Router)**, **Node.js/Express**, **MongoDB**, and **Better-Auth**. Creators, photographers, podcasters, and filmmakers can explore available studios, publish their own workspaces, manage listings, and book creative slots seamlessly.
+StudioSpace is a peer-to-peer creative studio booking marketplace. Creators, photographers, podcasters, and filmmakers discover, host, and reserve local workspaces like photography lofts, podcast rooms, sound labs, and production studios.
 
-🔗 **Live Website:** [https://your-studiospace-live-url.vercel.app](https://your-studiospace-live-url.vercel.app)  
-🔗 **Server API URL:** [https://your-studiospace-server.vercel.app](https://your-studiospace-server.vercel.app)  
-🔗 **Client Repository:** [https://github.com/your-username/studiospace-client](https://github.com/your-username/studiospace-client)  
-🔗 **Server Repository:** [https://github.com/your-username/studiospace-server](https://github.com/your-username/studiospace-server)
+Live site: https://studio-spacez-client.vercel.app/
 
----
+## Features
+- **Explore creative spaces** — browse all available studios on a responsive grid, search by title or location, and filter by category.
+- **Interactive slot reservation** — book any workspace via a pop-up reservation modal with shoot date picker, custom start/end hours, crew count validation, and automated total cost breakdown.
+- **Manage your bookings** — track all reserved studios in one dashboard table with shoot schedules, total costs, live status badges (`Pending`, `Confirmed`, `Completed`, `Cancelled`), and a confirmation modal to cancel pending slots.
+- **Host & manage listings** — publish new creative studios to the marketplace and update or delete your own workspaces filtered strictly by your host account.
+- **Protected private routes** — pages like `/add-studio`, `/my-listings`, and `/my-bookings` automatically redirect unauthenticated users to login with callback return support.
+- **Light and dark theme** — switch seamlessly between light and dark modes across the entire platform.
 
-## ✨ Key Features
+## Screenshots
 
-- **🔐 Secure Authentication & Route Protection:** Powered by **Better-Auth** with session persistence on page reload, protected private routes (`/add-studio`, `/my-listings`, `/my-bookings`), and automatic callback redirection after login.
-- **🏢 Studio Discovery & Dynamic Filtering:** Browse all available creative workspaces on `/studios` with category filtering, real-time search, detailed studio specifications, transparent hourly pricing, and security deposit breakdowns.
-- **📅 Interactive Slot Reservation System:** Reserve studios directly from the studio details page via a dynamic booking modal with shoot date selection, custom start/end hours, crew count validation, and automated total cost calculation.
-- **📋 Personal Booking Management (`/my-bookings`):** Track all personal reservations in a clean dashboard table displaying shoot dates, time slots, total costs, live status badges (`Pending`, `Confirmed`, `Completed`, `Cancelled`), and a confirmation modal to cancel pending bookings.
-- **🛠️ Host Workspace Management (`/add-studio` & `/my-listings`):** Publish new creative studios to the marketplace and manage, update, or delete user-owned studio listings filtered strictly by the logged-in owner's email.
-- **🌓 Responsive UI & Dark/Light Mode:** Fully responsive interface across mobile, tablet, and desktop devices with seamless theme switching and toast notifications.
+### Explore Studios
+Every card links to the studio details page, where you can review specs and reserve a slot.
+![Explore Studios](./public/screenshots/explore-studios.png/)
 
----
+### Studio Details & Booking Modal
+Review hourly rates, refundable security deposits, and reserve your shoot date and hours.
+![Booking Modal](./public/screenshots/booking-modal.png/)
 
-## 🛠️ Tech Stack
+### My Bookings
+Everything you reserved, complete with shoot schedules, total cost, and status badges.
+![My Bookings](./public/screenshots/my-bookings.png/)
 
-### Frontend
-- **Framework:** Next.js (App Router)
-- **Styling:** Tailwind CSS, Shadcn UI, Lucide React Icons
-- **Authentication:** Better-Auth (`authClient`)
-- **Notifications:** React Hot Toast
+### My Listings
+Manage, edit, and remove the creative studios you host.
+![My Listings](./public/screenshots/my-listings.png/)
 
-### Backend & Database
-- **Runtime & Framework:** Node.js, Express.js
-- **Database:** MongoDB (Native Driver / Atlas)
-- **Deployment:** Vercel
+## Pages
 
----
+| Route | Access | What it does |
+| :--- | :--- | :--- |
+| `/` | Public | Hero banner, featured studios, platform highlights, and call-to-action |
+| `/studios` | Public | All available studios with search and category filters |
+| `/studios/[id]` | Public | Studio details, specs, pricing, and interactive booking modal (login required to book) |
+| `/login`, `/register` | Public | Email/password authentication and account registration |
+| `/add-studio` | Private | Publish a new creative workspace to the marketplace |
+| `/my-listings` | Private | View, update, and delete the studios you host |
+| `/my-bookings` | Private | Track your studio reservations and cancel pending slots |
 
-## 🧪 Examiner Test Credentials
+## Tech stack
+- **Framework:** Next.js (App Router), React
+- **UI:** Tailwind CSS, shadcn/ui, lucide-react icons, react-hot-toast
+- **Auth:** Better Auth with MongoDB adapter and session persistence
+- **Backend:** Express.js + MongoDB — see the [server repository](https://github.com/Raihanz697/studio-spacez-server)
 
-Use the following credentials to test private routes, studio creation, and the booking workflow:
+## Run it locally
 
-- **Email:** `examiner@studiospace.com` *(তোমার রেজিস্টার করা টেস্ট ইমেইল দাও)*
-- **Password:** `Test@1234` *(তোমার টেস্ট পাসওয়ার্ড দাও)*
+1. Clone the repo and install packages:
 
----
-
-## 🚀 Local Setup & Installation
-
-Follow these steps to run the project locally:
-
-### 1. Clone the Repositories
-```bash
-git clone [https://github.com/your-username/studiospace-client.git](https://github.com/your-username/studiospace-client.git)
-cd studiospace-client
+git clone [https://github.com/Raihanz697/studio-spacez-client.git](https://github.com/Raihanz697/studio-spacez-client.git)
+cd studio-spacez-client
+npm install
