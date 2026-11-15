@@ -100,6 +100,7 @@ export default function StudioDetailsPage({ params }) {
 
   
   const handleOpenBookingModal = () => {
+    
     if (!user) {
       toast.error("Please login to reserve this creative workspace!");
       router.push(`/login?callbackUrl=/studios/${studioId}`);
@@ -143,12 +144,12 @@ export default function StudioDetailsPage({ params }) {
 
       toast.success("Creative slot reserved successfully!");
       setIsModalOpen(false);
-      router.push("/my-bookings");
+      router.push("/studios");
     } catch (err) {
       
-      toast.success("Booking request simulated successfully!");
+      toast.success("Failed to book workspace. Please try again.");
       setIsModalOpen(false);
-      router.push("/my-bookings");
+      router.push("/studios");
     } finally {
       setSubmittingBooking(false);
     }
